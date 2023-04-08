@@ -18,12 +18,7 @@ import net.ess3.provider.CommandSendListenerProvider;
 import net.ess3.provider.providers.BukkitCommandSendListenerProvider;
 import net.ess3.provider.providers.PaperCommandSendListenerProvider;
 import net.essentialsx.api.v2.events.AsyncUserDataLoadEvent;
-import org.bukkit.BanEntry;
-import org.bukkit.BanList;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import net.luckperms.api.LuckPerms;
 import org.bukkit.command.Command;
 import org.bukkit.command.FormattedCommandAlias;
 import org.bukkit.command.PluginCommand;
@@ -56,6 +51,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -75,7 +71,15 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import org.bukkit.BanEntry;
+import org.bukkit.BanList;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+
 import static com.earth2me.essentials.I18n.tl;
+import static org.bukkit.Bukkit.getServicesManager;
 
 public class EssentialsPlayerListener implements Listener, FakeAccessor {
     private final transient IEssentials ess;
@@ -893,9 +897,22 @@ public class EssentialsPlayerListener implements Listener, FakeAccessor {
             final InventoryHolder invHolder = top.getHolder();
             if (invHolder instanceof HumanEntity) {
                 final User invOwner = ess.getUser((Player) invHolder);
+
                 if (user.isInvSee() && (!user.isAuthorized("essentials.invsee.modify") || invOwner.isAuthorized("essentials.invsee.preventmodify") || !invOwner.getBase().isOnline())) {
                     event.setCancelled(true);
                     refreshPlayer = user.getBase();
+                }
+
+                final RegisteredServiceProvider<LuckPerms> provider = getServicesManager().getRegistration(LuckPerms.class);
+                if (provider != null) {
+                    final LuckPerms lpapi = provider.getProvider();
+
+                    final String userPrimaryGroup = lpapi.getUserManager().getUser(invOwner.getUUID()).getPrimaryGroup();
+
+                    if(!user.isAuthorized("essentials.invsee.canModify." + userPrimaryGroup)) {
+                        event.setCancelled(true);
+                        refreshPlayer = user.getBase();
+                    }
                 }
             }
         } else if (type == InventoryType.ENDER_CHEST) {
