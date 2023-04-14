@@ -907,11 +907,14 @@ public class EssentialsPlayerListener implements Listener, FakeAccessor {
                 if (provider != null) {
                     final LuckPerms lpapi = provider.getProvider();
 
-                    final String userPrimaryGroup = lpapi.getUserManager().getUser(invOwner.getUUID()).getPrimaryGroup();
+                    final net.luckperms.api.model.user.User lpuser = lpapi.getUserManager().getUser(invOwner.getUUID());
+                    if(lpuser != null) {
+                        final String userPrimaryGroup = lpuser.getPrimaryGroup();
 
-                    if(!user.isAuthorized("essentials.invsee.canModify." + userPrimaryGroup)) {
-                        event.setCancelled(true);
-                        refreshPlayer = user.getBase();
+                        if(!user.isAuthorized("essentials.invsee.canModify." + userPrimaryGroup)) {
+                            event.setCancelled(true);
+                            refreshPlayer = user.getBase();
+                        }
                     }
                 }
             }
