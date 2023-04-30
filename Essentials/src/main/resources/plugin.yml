@@ -364,6 +364,9 @@ commands:
     description: Enables or disables all current powertools.
     usage: /<command>
     aliases: [epowertooltoggle,ptt,eptt,pttoggle,epttoggle]
+  homelimit:
+    description: Adjust the additional home limit of a player.
+    usage: /<command> [player] <add|remove|set> value:<value>
   ptime:
     description: Adjust player's client time. Add @ prefix to fix.
     usage: /<command> [list|reset|day|night|dawn|17:30|4pm|4000ticks] [player|*]

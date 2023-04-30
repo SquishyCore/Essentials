@@ -614,6 +614,43 @@ public abstract class UserData extends PlayerExtension implements IConf {
         return ret;
     }
 
+    public int getAdditionalHomes() {
+        return holder.squishycoreAdditionalHomes();
+    }
+
+    public void addAdditionalHomes(final int set) {
+        final int newValue = getAdditionalHomes() + set;
+        if(newValue < 0) {
+            holder.squishycoreAdditionalHomes(getAdditionalHomes());
+        } else {
+            holder.squishycoreAdditionalHomes(newValue);
+        }
+
+        save();
+    }
+
+    public void removeAdditionalHomes(final int set) {
+        final int newValue = getAdditionalHomes() - set;
+        if(newValue < 0) {
+            holder.squishycoreAdditionalHomes(getAdditionalHomes());
+        } else {
+            holder.squishycoreAdditionalHomes(newValue);
+        }
+
+        save();
+    }
+
+    public void setAdditionalHomes(final int set) {
+        final int newValue = set;
+        if(newValue < 0) {
+            holder.squishycoreAdditionalHomes(getAdditionalHomes());
+        } else {
+            holder.squishycoreAdditionalHomes(newValue);
+        }
+
+        save();
+    }
+
     public long getKitTimestamp(String name) {
         name = name.replace('.', '_').replace('/', '_').toLowerCase(Locale.ENGLISH);
         if (holder.timestamps().kits() != null && holder.timestamps().kits().containsKey(name)) {

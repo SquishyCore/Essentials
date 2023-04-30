@@ -173,17 +173,19 @@ public class Settings implements net.ess3.api.ISettings {
     public int getHomeLimit(final User user) {
         int limit = 1;
         if (user.isAuthorized("essentials.sethome.multiple")) {
-            limit += getHomeLimit("default");
+            limit = getHomeLimit("default");
         }
 
         final Set<String> homeList = getMultipleHomes();
         if (homeList != null) {
             for (final String set : homeList) {
-                if (user.isAuthorized("essentials.sethome.multiple." + set)) {
-                    limit += getHomeLimit(set);
+                if (user.isAuthorized("essentials.sethome.multiple." + set) && (limit < getHomeLimit(set))) {
+                    limit = getHomeLimit(set);
                 }
             }
         }
+
+        limit += user.getAdditionalHomes();
         return limit;
     }
 

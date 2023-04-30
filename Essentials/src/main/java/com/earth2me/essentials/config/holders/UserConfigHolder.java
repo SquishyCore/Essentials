@@ -463,4 +463,14 @@ public class UserConfigHolder {
             this.commandCooldowns = value;
         }
     }
+
+    private int squishycoreAdditionalHomes = 0;
+
+    public int squishycoreAdditionalHomes() {
+        return this.squishycoreAdditionalHomes;
+    }
+
+    public void squishycoreAdditionalHomes(final int value) {
+        this.squishycoreAdditionalHomes = value;
+    }
 }
